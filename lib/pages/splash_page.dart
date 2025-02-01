@@ -1,3 +1,4 @@
+import 'package:find_house_app/pages/home_page.dart';
 import 'package:find_house_app/theme.dart';
 import 'package:flutter/material.dart';
 
@@ -29,12 +30,12 @@ class SplashPage extends StatelessWidget {
                     const SizedBox(height: 30),
                     Text('Find Cozy House\nto Stay and Happy',
                         style: blackTextStyle.copyWith(
-                            fontSize: 24, fontWeight: FontWeight.w600)),
+                            fontSize: 24, fontWeight: fontMedium)),
                     const SizedBox(height: 10),
                     Text(
                         'Stop membuang banyak waktu\npada tempat yang tidak habitable',
                         style: greyTextStyle.copyWith(
-                            fontSize: 16, fontWeight: FontWeight.w300)),
+                            fontSize: 16, fontWeight: fontLight)),
                     const SizedBox(height: 40),
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
@@ -44,7 +45,12 @@ class SplashPage extends StatelessWidget {
                             horizontal: 50, vertical: 12),
                         backgroundColor: purpleColor,
                       ),
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) {
+                          return const HomePage();
+                        }));
+                      },
                       child: Text(
                         'Explore Now',
                         style: TextStyle(color: whiteColor, fontSize: 18),
