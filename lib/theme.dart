@@ -17,8 +17,8 @@ TextStyle greyTextStyle = GoogleFonts.poppins(color: greyColor);
 TextStyle purpleTextStyle = GoogleFonts.poppins(color: purpleColor);
 
 // Font weigt
-FontWeight fontBold = FontWeight.w900;
-FontWeight fontSemibold = FontWeight.w700;
-FontWeight fontMedium = FontWeight.w600;
+FontWeight fontBold = FontWeight.w700;
+FontWeight fontSemibold = FontWeight.w600;
+FontWeight fontMedium = FontWeight.w500;
 FontWeight fontNormal = FontWeight.w400;
 FontWeight fontLight = FontWeight.w300;
