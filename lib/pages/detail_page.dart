@@ -1,6 +1,9 @@
+import 'package:find_house_app/pages/error_page.dart';
 import 'package:find_house_app/theme.dart';
 import 'package:find_house_app/widgets/facilities_widget.dart';
 import 'package:flutter/material.dart';
+// ignore: depend_on_referenced_packages
+import 'package:url_launcher/url_launcher.dart';
 
 class DetailPage extends StatelessWidget {
   const DetailPage({super.key});
@@ -9,6 +12,23 @@ class DetailPage extends StatelessWidget {
   Widget build(BuildContext context) {
     // Mendapatkan tinggi status bar
     double statusBarHeight = MediaQuery.of(context).padding.top;
+
+    Future<void> showUrl(Uri url) async {
+      if (!await launchUrl(url, mode: LaunchMode.inAppBrowserView)) {
+        // ignore: use_build_context_synchronously
+        Navigator.push(context, MaterialPageRoute(builder: (context) {
+          return ErrorPage();
+        }));
+      }
+    }
+
+    Future<void> makePhoneCall(String phoneNumber) async {
+      final Uri launchUri = Uri(
+        scheme: 'tel',
+        path: phoneNumber,
+      );
+      await launchUrl(launchUri);
+    }
 
     List<String> photos = [
       'assets/photo1.png',
@@ -157,7 +177,8 @@ class DetailPage extends StatelessWidget {
                               style: greyTextStyle.copyWith(fontSize: 14)),
                           InkWell(
                             onTap: () {
-                              print('object2');
+                              showUrl(Uri.parse(
+                                  'https://www.google.com/maps/place/LAPANGAN+FUTSAL+BUANA+GARDEN/@1.0366398,104.072011,18.56z/data=!4m6!3m5!1s0x31d98f16a28ec945:0x2c8379216abee690!8m2!3d1.0367064!4d104.0728087!16s%2Fg%2F11ly6z7l_7?entry=ttu&g_ep=EgoyMDI1MDEyOS4xIKXMDSoASAFQAw%3D%3D'));
                             },
                             child: Image.asset(
                               'assets/btn_map.png',
@@ -180,7 +201,9 @@ class DetailPage extends StatelessWidget {
                                   horizontal: 50, vertical: 12),
                               backgroundColor: purpleColor,
                             ),
-                            onPressed: () {},
+                            onPressed: () {
+                              makePhoneCall('6287887292042');
+                            },
                             child: Text('Book Now',
                                 style: whiteTextStyle.copyWith(fontSize: 18))),
                       ),
