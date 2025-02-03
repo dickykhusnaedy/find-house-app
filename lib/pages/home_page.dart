@@ -30,6 +30,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     _getData();
     return Scaffold(
+      backgroundColor: whiteColor,
       body: SafeArea(
         child: ListView(
           children: [
