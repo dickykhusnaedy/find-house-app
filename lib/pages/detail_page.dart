@@ -1,12 +1,16 @@
+import 'package:find_house_app/models/recomendation_space_model.dart';
 import 'package:find_house_app/pages/error_page.dart';
 import 'package:find_house_app/theme.dart';
 import 'package:find_house_app/widgets/facilities_widget.dart';
+import 'package:find_house_app/widgets/rating_item.dart';
 import 'package:flutter/material.dart';
 // ignore: depend_on_referenced_packages
 import 'package:url_launcher/url_launcher.dart';
 
 class DetailPage extends StatelessWidget {
-  const DetailPage({super.key});
+  final RecomendationSpaceModel data;
+
+  const DetailPage({super.key, required this.data});
 
   @override
   Widget build(BuildContext context) {
@@ -30,17 +34,11 @@ class DetailPage extends StatelessWidget {
       await launchUrl(launchUri);
     }
 
-    List<String> photos = [
-      'assets/photo1.png',
-      'assets/photo2.png',
-      'assets/photo3.png'
-    ];
-
     return Scaffold(
       body: Stack(
         children: [
-          Image.asset(
-            'assets/thumbnail.png',
+          Image.network(
+            data.imageUrl!,
             width: MediaQuery.of(context).size.width,
             height: 450,
             fit: BoxFit.cover,
@@ -69,13 +67,13 @@ class DetailPage extends StatelessWidget {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text('Kuretakeso Hott',
+                              Text(data.name!,
                                   style: blackTextStyle.copyWith(
                                       fontSize: 22, fontWeight: fontBold)),
                               const SizedBox(height: 2),
                               Text.rich(
                                 TextSpan(
-                                  text: '\$52 ',
+                                  text: '\$${data.price!} ',
                                   style: purpleTextStyle.copyWith(
                                       fontSize: 16, fontWeight: fontBold),
                                   children: <InlineSpan>[
@@ -90,17 +88,13 @@ class DetailPage extends StatelessWidget {
                             ],
                           ),
                           Row(
-                            children: [
-                              Image.asset('assets/icon_star.png', width: 20),
-                              Image.asset('assets/icon_star.png', width: 20),
-                              Image.asset('assets/icon_star.png', width: 20),
-                              Image.asset('assets/icon_star.png', width: 20),
-                              Image.asset(
-                                'assets/icon_star.png',
-                                width: 20,
-                                color: Color(0xff989BA1),
-                              ),
-                            ],
+                            children: [1, 2, 3, 4, 5].map((index) {
+                              return Container(
+                                margin: EdgeInsets.only(left: 2),
+                                child: RatingItem(
+                                    index: index, rating: data.rating!),
+                              );
+                            }).toList(),
                           )
                         ],
                       ),
@@ -118,17 +112,17 @@ class DetailPage extends StatelessWidget {
                         children: [
                           FacilitiesWidget(
                             imagePath: 'assets/icon_kitchen.png',
-                            count: 2,
+                            count: data.numberOfKitchens!,
                             type: 'kitchen',
                           ),
                           FacilitiesWidget(
                             imagePath: 'assets/icon_bedroom.png',
-                            count: 3,
+                            count: data.numberOfBedrooms!,
                             type: 'bedroom',
                           ),
                           FacilitiesWidget(
                             imagePath: 'assets/icon_cupboard.png',
-                            count: 3,
+                            count: data.numberOfCupboards!,
                             type: 'big lemari',
                           ),
                         ],
@@ -144,7 +138,7 @@ class DetailPage extends StatelessWidget {
                       height: 88,
                       child: ListView.separated(
                         shrinkWrap: true,
-                        itemCount: photos.length,
+                        itemCount: data.photos!.length,
                         scrollDirection: Axis.horizontal,
                         separatorBuilder: (BuildContext context, int index) =>
                             SizedBox(width: 18),
@@ -152,12 +146,15 @@ class DetailPage extends StatelessWidget {
                           return Container(
                             margin: EdgeInsets.only(
                               left: index == 0 ? edge : 0, // Space awal
-                              right: index == photos.length - 1
+                              right: index == data.photos!.length - 1
                                   ? edge
                                   : 0, // Space akhir
                             ),
-                            child: Image.asset(photos[index],
-                                width: 110, height: 88, fit: BoxFit.cover),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(16),
+                              child: Image.network(data.photos![index],
+                                  width: 110, height: 88, fit: BoxFit.cover),
+                            ),
                           );
                         },
                       ),
@@ -173,12 +170,11 @@ class DetailPage extends StatelessWidget {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('Jln. Kappan Sukses No. 20\nPalembang',
+                          Text('${data.address!}\n${data.city!}',
                               style: greyTextStyle.copyWith(fontSize: 14)),
                           InkWell(
                             onTap: () {
-                              showUrl(Uri.parse(
-                                  'https://www.google.com/maps/place/LAPANGAN+FUTSAL+BUANA+GARDEN/@1.0366398,104.072011,18.56z/data=!4m6!3m5!1s0x31d98f16a28ec945:0x2c8379216abee690!8m2!3d1.0367064!4d104.0728087!16s%2Fg%2F11ly6z7l_7?entry=ttu&g_ep=EgoyMDI1MDEyOS4xIKXMDSoASAFQAw%3D%3D'));
+                              showUrl(Uri.parse(data.mapUrl!));
                             },
                             child: Image.asset(
                               'assets/btn_map.png',
@@ -202,7 +198,7 @@ class DetailPage extends StatelessWidget {
                               backgroundColor: purpleColor,
                             ),
                             onPressed: () {
-                              makePhoneCall('6287887292042');
+                              makePhoneCall(data.phone!);
                             },
                             child: Text('Book Now',
                                 style: whiteTextStyle.copyWith(fontSize: 18))),
