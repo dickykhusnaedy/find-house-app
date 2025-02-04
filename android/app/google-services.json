@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "983250409639",
+    "project_id": "find-house-280fb",
+    "storage_bucket": "find-house-280fb.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:983250409639:android:c834a795bf832e751a6382",
+        "android_client_info": {
+          "package_name": "com.example.find_house_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA2RK-0CXksa10p5Dt84EfTyElqQe_igGo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
