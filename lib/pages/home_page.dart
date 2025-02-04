@@ -1,12 +1,14 @@
 import 'package:find_house_app/models/city_categories_model.dart';
 import 'package:find_house_app/models/recomendation_space_model.dart';
 import 'package:find_house_app/models/tips_model.dart';
+import 'package:find_house_app/providers/space_provider.dart';
 import 'package:find_house_app/widgets/bottom_navbar_item.dart';
 import 'package:find_house_app/widgets/city_categories.dart';
 import 'package:find_house_app/widgets/recomendation_space.dart';
 import 'package:find_house_app/widgets/tips_section.dart';
 import 'package:flutter/material.dart';
 import 'package:find_house_app/theme.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -22,13 +24,17 @@ class _HomePageState extends State<HomePage> {
 
   void _getData() {
     cityCategories = CityCategoriesModels.getCategories();
-    recomendation = RecomendationSpaceModel.getRecomendation();
+    // recomendation = RecomendationSpaceModel.getRecomendation();
     tips = TipsModel.getTips();
   }
 
   @override
   Widget build(BuildContext context) {
     _getData();
+
+    var spaceProvider = Provider.of<SpaceProvider>(context);
+    spaceProvider.getRecomendedSpace();
+
     return Scaffold(
       backgroundColor: whiteColor,
       body: SafeArea(
@@ -90,23 +96,48 @@ class _HomePageState extends State<HomePage> {
                 const SizedBox(height: 16),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: edge),
-                  child: ListView.separated(
-                      physics: NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      itemBuilder: (context, index) {
-                        return RecomendationSpace(
-                          id: recomendation[index].id,
-                          imagePath: recomendation[index].imagePath,
-                          title: recomendation[index].title,
-                          price: recomendation[index].price,
-                          location: recomendation[index].location,
-                          rate: recomendation[index].rate,
-                        );
-                      },
-                      separatorBuilder: (BuildContext context, int index) =>
-                          const SizedBox(height: 20),
-                      itemCount: recomendation.length),
+                  child: FutureBuilder(
+                      future: spaceProvider.getRecomendedSpace(),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          List<RecomendationSpaceModel> data =
+                              snapshot.data as List<RecomendationSpaceModel>;
+
+                          int index = 0;
+                          return Column(
+                            children: data.map((item) {
+                              index++;
+                              return Container(
+                                margin:
+                                    EdgeInsets.only(top: index == 1 ? 0 : 20),
+                                child: RecomendationSpace(data: item),
+                              );
+                            }).toList(),
+                          );
+                        }
+
+                        return Center(child: CircularProgressIndicator());
+                      }),
                 )
+                // Padding(
+                //   padding: EdgeInsets.symmetric(horizontal: edge),
+                //   child: ListView.separated(
+                //       physics: NeverScrollableScrollPhysics(),
+                //       shrinkWrap: true,
+                //       itemBuilder: (context, index) {
+                //         return RecomendationSpace(
+                //           id: recomendation[index].id,
+                //           imagePath: recomendation[index].imagePath,
+                //           title: recomendation[index].title,
+                //           price: recomendation[index].price,
+                //           location: recomendation[index].location,
+                //           rate: recomendation[index].rate,
+                //         );
+                //       },
+                //       separatorBuilder: (BuildContext context, int index) =>
+                //           const SizedBox(height: 20),
+                //       itemCount: recomendation.length),
+                // )
               ],
             ),
             const SizedBox(height: 30),
