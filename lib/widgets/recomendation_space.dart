@@ -1,30 +1,19 @@
+import 'package:find_house_app/models/recomendation_space_model.dart';
 import 'package:find_house_app/pages/detail_page.dart';
 import 'package:find_house_app/theme.dart';
 import 'package:flutter/material.dart';
 
 class RecomendationSpace extends StatelessWidget {
-  final int id;
-  final String imagePath;
-  final String title;
-  final int price;
-  final String location;
-  final int rate;
+  final RecomendationSpaceModel data;
 
-  const RecomendationSpace(
-      {super.key,
-      required this.id,
-      required this.imagePath,
-      required this.title,
-      required this.price,
-      required this.location,
-      required this.rate});
+  const RecomendationSpace({super.key, required this.data});
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
         Navigator.push(context, MaterialPageRoute(builder: (context) {
-          return DetailPage();
+          return DetailPage(data: data);
         }));
       },
       child: Row(
@@ -37,8 +26,8 @@ class RecomendationSpace extends StatelessWidget {
               child: Stack(
                 alignment: Alignment.topRight,
                 children: [
-                  Image.asset(
-                    imagePath,
+                  Image.network(
+                    data.imageUrl!,
                     width: 130,
                     height: 110,
                     fit: BoxFit.cover,
@@ -59,7 +48,7 @@ class RecomendationSpace extends StatelessWidget {
                               width: 18, height: 18),
                           const SizedBox(width: 2),
                           Text(
-                            '$rate/5',
+                            '${data.rating!}/5',
                             style: whiteTextStyle.copyWith(fontSize: 12),
                           )
                         ],
@@ -75,14 +64,14 @@ class RecomendationSpace extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                title,
+                data.name!,
                 style:
                     blackTextStyle.copyWith(fontSize: 18, fontWeight: fontBold),
               ),
               const SizedBox(height: 2),
               Text.rich(
                 TextSpan(
-                  text: '\$$price ',
+                  text: '\$${data.price!} ',
                   style: purpleTextStyle.copyWith(
                       fontSize: 16, fontWeight: fontBold),
                   children: <InlineSpan>[
@@ -95,7 +84,7 @@ class RecomendationSpace extends StatelessWidget {
               ),
               const SizedBox(height: 16),
               Text(
-                location,
+                '${data.city!}, ${data.country!}',
                 style:
                     greyTextStyle.copyWith(fontSize: 14, fontWeight: fontLight),
               ),
