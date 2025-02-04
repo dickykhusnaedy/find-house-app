@@ -7,10 +7,17 @@ import 'package:flutter/material.dart';
 // ignore: depend_on_referenced_packages
 import 'package:url_launcher/url_launcher.dart';
 
-class DetailPage extends StatelessWidget {
+class DetailPage extends StatefulWidget {
   final RecomendationSpaceModel data;
 
   const DetailPage({super.key, required this.data});
+
+  @override
+  State<DetailPage> createState() => _DetailPageState();
+}
+
+class _DetailPageState extends State<DetailPage> {
+  bool isActive = false;
 
   @override
   Widget build(BuildContext context) {
@@ -34,11 +41,45 @@ class DetailPage extends StatelessWidget {
       await launchUrl(launchUri);
     }
 
+    void showConfirmation(String phoneNumber) async {
+      return await showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              actionsPadding: EdgeInsets.only(bottom: 14),
+              insetPadding: EdgeInsets.all(edge),
+              title: Text(
+                'Are you sure?',
+                style: blackTextStyle.copyWith(fontSize: 18),
+              ),
+              content: Text(
+                'Apakah Anda yakin ingin menghubungi pemilik kos?',
+                style: blackTextStyle.copyWith(fontSize: 14),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text('Batal'),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                    makePhoneCall(phoneNumber);
+                  },
+                  child: Text('Ya'),
+                ),
+              ],
+            );
+          });
+    }
+
     return Scaffold(
       body: Stack(
         children: [
           Image.network(
-            data.imageUrl!,
+            widget.data.imageUrl!,
             width: MediaQuery.of(context).size.width,
             height: 450,
             fit: BoxFit.cover,
@@ -67,13 +108,13 @@ class DetailPage extends StatelessWidget {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(data.name!,
+                              Text(widget.data.name!,
                                   style: blackTextStyle.copyWith(
                                       fontSize: 22, fontWeight: fontBold)),
                               const SizedBox(height: 2),
                               Text.rich(
                                 TextSpan(
-                                  text: '\$${data.price!} ',
+                                  text: '\$${widget.data.price!} ',
                                   style: purpleTextStyle.copyWith(
                                       fontSize: 16, fontWeight: fontBold),
                                   children: <InlineSpan>[
@@ -92,7 +133,7 @@ class DetailPage extends StatelessWidget {
                               return Container(
                                 margin: EdgeInsets.only(left: 2),
                                 child: RatingItem(
-                                    index: index, rating: data.rating!),
+                                    index: index, rating: widget.data.rating!),
                               );
                             }).toList(),
                           )
@@ -112,17 +153,17 @@ class DetailPage extends StatelessWidget {
                         children: [
                           FacilitiesWidget(
                             imagePath: 'assets/icon_kitchen.png',
-                            count: data.numberOfKitchens!,
+                            count: widget.data.numberOfKitchens!,
                             type: 'kitchen',
                           ),
                           FacilitiesWidget(
                             imagePath: 'assets/icon_bedroom.png',
-                            count: data.numberOfBedrooms!,
+                            count: widget.data.numberOfBedrooms!,
                             type: 'bedroom',
                           ),
                           FacilitiesWidget(
                             imagePath: 'assets/icon_cupboard.png',
-                            count: data.numberOfCupboards!,
+                            count: widget.data.numberOfCupboards!,
                             type: 'big lemari',
                           ),
                         ],
@@ -138,7 +179,7 @@ class DetailPage extends StatelessWidget {
                       height: 88,
                       child: ListView.separated(
                         shrinkWrap: true,
-                        itemCount: data.photos!.length,
+                        itemCount: widget.data.photos!.length,
                         scrollDirection: Axis.horizontal,
                         separatorBuilder: (BuildContext context, int index) =>
                             SizedBox(width: 18),
@@ -146,13 +187,13 @@ class DetailPage extends StatelessWidget {
                           return Container(
                             margin: EdgeInsets.only(
                               left: index == 0 ? edge : 0, // Space awal
-                              right: index == data.photos!.length - 1
+                              right: index == widget.data.photos!.length - 1
                                   ? edge
                                   : 0, // Space akhir
                             ),
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(16),
-                              child: Image.network(data.photos![index],
+                              child: Image.network(widget.data.photos![index],
                                   width: 110, height: 88, fit: BoxFit.cover),
                             ),
                           );
@@ -170,11 +211,11 @@ class DetailPage extends StatelessWidget {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('${data.address!}\n${data.city!}',
+                          Text('${widget.data.address!}\n${widget.data.city!}',
                               style: greyTextStyle.copyWith(fontSize: 14)),
                           InkWell(
                             onTap: () {
-                              showUrl(Uri.parse(data.mapUrl!));
+                              showUrl(Uri.parse(widget.data.mapUrl!));
                             },
                             child: Image.asset(
                               'assets/btn_map.png',
@@ -198,7 +239,7 @@ class DetailPage extends StatelessWidget {
                               backgroundColor: purpleColor,
                             ),
                             onPressed: () {
-                              makePhoneCall(data.phone!);
+                              showConfirmation(widget.data.phone!);
                             },
                             child: Text('Book Now',
                                 style: whiteTextStyle.copyWith(fontSize: 18))),
@@ -226,9 +267,15 @@ class DetailPage extends StatelessWidget {
                   ),
                 ),
                 InkWell(
-                  onTap: () {},
+                  onTap: () {
+                    setState(() {
+                      isActive = !isActive;
+                    });
+                  },
                   child: Image.asset(
-                    'assets/btn_wishlist.png',
+                    isActive
+                        ? 'assets/btn_wishlist_active.png'
+                        : 'assets/btn_wishlist.png',
                     width: 40,
                   ),
                 ),
