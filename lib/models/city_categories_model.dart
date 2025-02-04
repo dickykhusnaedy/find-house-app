@@ -30,9 +30,16 @@ class CityCategoriesModels {
         isPopular: false));
     cityCategories.add(CityCategoriesModels(
         id: 3,
-        imagePath: 'assets/city3.png',
-        title: 'Surabaya',
-        isPopular: true));
+        imagePath: 'assets/city4.png',
+        title: 'Palembang',
+        isPopular: false));
+    cityCategories.add(CityCategoriesModels(
+        id: 3, imagePath: 'assets/city5.png', title: 'Aceh', isPopular: true));
+    cityCategories.add(CityCategoriesModels(
+        id: 3,
+        imagePath: 'assets/city6.png',
+        title: 'Bogor',
+        isPopular: false));
 
     return cityCategories;
   }
