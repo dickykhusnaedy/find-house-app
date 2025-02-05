@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:983250409639:android:c834a795bf832e751a6382",
+        "mobilesdk_app_id": "1:983250409639:android:96814481067367aa1a6382",
         "android_client_info": {
-          "package_name": "com.example.find_house_app"
+          "package_name": "com.dickydev.find_house_app"
         }
       },
       "oauth_client": [],
